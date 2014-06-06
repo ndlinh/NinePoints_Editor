@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <NinePoints_Editor>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <Mage_Cms/>
+                <Mage_Adminhtml />
+            </depends>
+        </NinePoints_Editor>
+    </modules>
+</config>

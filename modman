@@ -1,0 +1,10 @@
+# Name: NinePoints_Editor
+# Version: 0.1.0
+# Description: A better editor using CKEditor and syntax highlight feature.
+# Summary: A better editor using CKEditor and syntax highlight feature.
+
+app/code/community/NinePoints/Editor/                            app/code/community/Celtic/Editor/
+app/etc/modules/NinePoints_Editor.xml                           app/etc/modules/NinePoints_Editor.xml
+app/design/adminhtml/default/default/layout/npeditor.xml       app/design/adminhtml/default/default/layout/npeditor.xml
+app/design/adminhtml/default/default/template/npeditor/        app/design/adminhtml/default/default/template/npeditor/
+skin/adminhtml/default/default/npeditor/                       skin/adminhtml/default/default/npeditor/

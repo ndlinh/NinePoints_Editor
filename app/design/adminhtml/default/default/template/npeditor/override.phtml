@@ -1,0 +1,172 @@
+<!--<script type="text/javascript">-->
+<!--    tinyMceWysiwygSetup.prototype.turnOn = function() {-->
+<!--        advEditorToggle(this.id);-->
+<!--        CKEDITOR.instances[this.id].config.magentowidget_url = this.config.widget_window_url;-->
+<!--        CKEDITOR.instances[this.id].config.magentovar_url = '--><?php //echo Mage::helper('npeditor')->getVariablesWysiwygActionUrl() ?><!--';-->
+<!--        CKEDITOR.instances[this.id].updateElement();-->
+<!--        this.getPluginButtons().each(function(e) {-->
+<!--            e.hide();-->
+<!--        });-->
+<!--    }-->
+<!---->
+<!--    tinyMceWysiwygSetup.prototype.turnOff = function() {-->
+<!--        if (CKEDITOR.instances[this.id]) {-->
+<!--            CKEDITOR.instances[this.id].updateElement();-->
+<!--        }-->
+<!--        advEditorToggle(this.id);-->
+<!--        this.getPluginButtons().each(function(e) {-->
+<!--            e.show();-->
+<!--        });-->
+<!--    }-->
+<!---->
+<!--    tinyMceWysiwygSetup.prototype.onFormValidation = function() {-->
+<!--        if (CKEDITOR.instances[this.id]) {-->
+<!--            CKEDITOR.instances[this.id].updateElement();-->
+<!--        }-->
+<!--    }-->
+<!---->
+<!--    tinyMceWysiwygSetup.prototype.initialize = function(htmlId, config)-->
+<!--    {-->
+<!--        this.id = htmlId;-->
+<!--        this.config = config;-->
+<!--        varienGlobalEvents.attachEventHandler('tinymceChange', this.onChangeContent.bind(this));-->
+<!--        this.notifyFirebug();-->
+<!--    }-->
+<!---->
+<!--    tinyMceWysiwygSetup.prototype.toggle = function() {-->
+<!--        if (CKEDITOR.instances[this.id]) {-->
+<!--            this.turnOff();-->
+<!--            return true;-->
+<!--        } else {-->
+<!--            this.turnOn();-->
+<!--            this.bindEvents();-->
+<!--            return false;-->
+<!--        }-->
+<!--    }-->
+<!---->
+<!--    tinyMceWysiwygSetup.prototype.setup = function(mode) {-->
+<!--        advEditorToggle(this.id);-->
+<!--        CKEDITOR.instances[this.id].config.magentowidget_url = this.config.widget_window_url;-->
+<!--        CKEDITOR.instances[this.id].config.magentovar_url = '--><?php //echo Mage::helper('npeditor')->getVariablesWysiwygActionUrl() ?><!--';-->
+<!--        this.bindEvents();-->
+<!--    }-->
+<!---->
+<!--    tinyMceWysiwygSetup.prototype.bindEvents = function() {-->
+<!--        var editor = CKEDITOR.instances[this.id];-->
+<!---->
+<!--        editor.on('getData', function(evt) {-->
+<!--            varienGlobalEvents.fireEvent('tinymceSaveContent', evt);-->
+<!--        });-->
+<!---->
+<!--        editor.on('setData', function(evt) {-->
+<!--            evt.content = evt.data.dataValue;-->
+<!--            varienGlobalEvents.fireEvent('tinymceBeforeSetContent', evt);-->
+<!--        });-->
+<!--    }-->
+<!---->
+<!--    tinyMceWysiwygSetup.prototype.beforeSetContent = function(o) {-->
+<!--        if (this.config.add_widgets) {-->
+<!--            o.data.dataValue = this.encodeWidgets(o.data.dataValue);-->
+<!--            o.data.dataValue = this.encodeDirectives(o.data.dataValue);-->
+<!--        } else if (this.config.add_directives) {-->
+<!--            o.data.dataValue = this.encodeDirectives(o.data.dataValue);-->
+<!--        }-->
+<!--    }-->
+<!---->
+<!--    tinyMceWysiwygSetup.prototype.saveContent = function(o) {-->
+<!--        if (this.config.add_widgets) {-->
+<!--            o.data.dataValue = this.decodeWidgets(o.data.dataValue);-->
+<!--            o.data.dataValue = this.decodeDirectives(o.data.dataValue);-->
+<!--        } else if (this.config.add_directives) {-->
+<!--            o.data.dataValue = this.decodeDirectives(o.data.dataValue);-->
+<!--        }-->
+<!--    }-->
+<!---->
+<!--    /**-->
+<!--     * Override Widgets-->
+<!--     */-->
+<!--    WysiwygWidget.Widget.prototype.wysiwygExists = function() {-->
+<!--        return (CKEDITOR.instances[this.widgetTargetId] != null);-->
+<!--    }-->
+<!---->
+<!--    WysiwygWidget.Widget.prototype.insertWidget = function(editor) {-->
+<!---->
+<!--        widgetOptionsForm = new varienForm(this.formEl);-->
+<!--        if(widgetOptionsForm.validator && widgetOptionsForm.validator.validate() || !widgetOptionsForm.validator){-->
+<!--            var formElements = [];-->
+<!--            var i = 0;-->
+<!--            Form.getElements($(this.formEl)).each(function(e) {-->
+<!--                if(!e.hasClassName('skip-submit')) {-->
+<!--                    formElements[i] = e;-->
+<!--                    i++;-->
+<!--                }-->
+<!--            });-->
+<!---->
+<!--            // Add as_is flag to parameters if wysiwyg editor doesn't exist-->
+<!--            var params = Form.serializeElements(formElements);-->
+<!--            if (!this.wysiwygExists()) {-->
+<!--                params = params + '&as_is=1';-->
+<!--            }-->
+<!---->
+<!--            new Ajax.Request($(this.formEl).action,-->
+<!--                {-->
+<!--                    parameters: params,-->
+<!--                    onComplete: function(transport) {-->
+<!--                        try {-->
+<!--                            widgetTools.onAjaxSuccess(transport);-->
+<!---->
+<!--                            if (editor != undefined) {-->
+<!--                                var tag = CKEDITOR.dom.element.createFromHtml(transport.responseText);-->
+<!--                                editor.insertElement(tag);-->
+<!--                                editor.widgets.initOn(tag, 'magewidget');-->
+<!--                            } else {-->
+<!--                                Windows.close("widget_window");-->
+<!--                                var textarea = document.getElementById(this.widgetTargetId);-->
+<!--                                updateElementAtCursor(textarea, transport.responseText);-->
+<!--                            }-->
+<!--                        } catch(e) {-->
+<!--                            alert(e.message);-->
+<!--                        }-->
+<!--                    }.bind(this)-->
+<!--                });-->
+<!--        }-->
+<!--    }-->
+<!---->
+<!--    WysiwygWidget.Widget.prototype.getWysiwygNode = function() {-->
+<!--        var selection = CKEDITOR.instances[this.widgetTargetId].getSelection();-->
+<!--        if (selection && selection.getType() == CKEDITOR.SELECTION_ELEMENT) {-->
+<!--            return selection.getStartElement().getFirst();-->
+<!--        }-->
+<!---->
+<!--        return null;-->
+<!--    }-->
+<!---->
+<!--    WysiwygWidget.Widget.prototype.initOptionValues = function() {-->
+<!---->
+<!--        if (!this.wysiwygExists()) {-->
+<!--            return false;-->
+<!--        }-->
+<!---->
+<!--        var e = this.getWysiwygNode();-->
+<!--        if (e != undefined && e.getId()) {-->
+<!--            var widgetCode = Base64.idDecode(e.getId());-->
+<!--            if (widgetCode.indexOf('{{widget') != -1) {-->
+<!--                this.optionValues = new Hash({});-->
+<!--                widgetCode.gsub(/([a-z0-9\_]+)\s*\=\s*[\"]{1}([^\"]+)[\"]{1}/i, function(match){-->
+<!--                    if (match[1] == 'type') {-->
+<!--                        this.widgetEl.value = match[2];-->
+<!--                    } else {-->
+<!--                        this.optionValues.set(match[1], match[2]);-->
+<!--                    }-->
+<!--                }.bind(this));-->
+<!---->
+<!--                this.loadOptions();-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
+<style type="text/css">
+    .dialog.popup-window {
+        z-index: 1000100 !important;
+    }
+</style>
