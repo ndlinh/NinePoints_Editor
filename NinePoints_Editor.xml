@@ -46,7 +46,7 @@
             <target>mageskin</target>
         </target>
         <path>
-            <path>Celtic/Editor</path>
+            <path>NinePoints/Editor</path>
             <path>modules/NinePoints_Editor.xml</path>
             <path>adminhtml/default/default/layout/npeditor.xml</path>
             <path>adminhtml/default/default/template/npeditor/</path>

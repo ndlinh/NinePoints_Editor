@@ -6,7 +6,7 @@
     function advEditorToggle(elementId) {
         if (CKEDITOR.instances[elementId]) {
             CKEDITOR.instances[elementId].destroy(true);
-
+console.log(elementId);
             return null;
         } else {
             CKEDITOR.replace(elementId, {

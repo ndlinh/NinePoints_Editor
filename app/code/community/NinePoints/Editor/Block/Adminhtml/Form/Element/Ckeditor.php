@@ -96,12 +96,6 @@ class NinePoints_Editor_Block_Adminhtml_Form_Element_Ckeditor extends Varien_Dat
             $html .= $this->getAfterElementHtml();
             return $html;
         } else {
-            // Display only buttons to additional features
-            if ($this->getConfig('widget_window_url')) {
-                $html = $this->_getButtonsHtml() . $js . parent::getElementHtml();
-                $html = $this->_wrapIntoContainer($html);
-                return $html;
-            }
             return parent::getElementHtml();
         }
     }

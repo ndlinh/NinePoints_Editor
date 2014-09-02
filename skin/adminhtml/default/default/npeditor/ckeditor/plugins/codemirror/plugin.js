@@ -8,8 +8,8 @@
 
 (function() {
     CKEDITOR.plugins.add('codemirror', {
-        icons: 'SearchCode,AutoFormat,CommentSelectedRange,UncommentSelectedRange,AutoComplete',
-        lang: 'af,ar,bg,bn,bs,ca,cs,cy,da,de,el,en-au,en-ca,en-gb,en,eo,es,et,eu,fa,fi,fo,fr-ca,fr,gl,gu,he,hi,hr,hu,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,pl,pt-br,pt,ro,ru,sk,sl,sr-latn,sr,sv,th,tr,ug,uk,vi,zh-cn,zh',
+        icons: 'searchcode,autoformat,commentselectedrange,uncommentselectedrange,autocomplete',
+        lang: 'af,ar,bg,bn,bs,ca,cs,cy,da,de,el,en-au,en-ca,en-gb,en,eo,es,et,eu,fa,fi,fo,fr-ca,fr,gl,gu,he,hi,hr,hu,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,pl,pt-br,pt,ro,ru,sk,sl,sr-latn,sr,sv,th,tr,ug,uk,vi,zh-cn,zh', // %REMOVE_LINE_CORE%
         version: 1.11,
         init: function (editor) {
             var rootPath = this.path,
@@ -26,7 +26,7 @@
                     highlightMatches: true,
                     indentWithTabs: false,
                     lineNumbers: true,
-                    lineWrapping: false,
+                    lineWrapping: true,
                     mode: 'htmlmixed',
                     matchBrackets: true,
                     matchTags: true,
@@ -50,6 +50,11 @@
             }
             if (editor.config.codemirror_autoFormatOnStart) {
                 config.autoFormatOnStart = editor.config.codemirror_autoFormatOnStart;
+            }
+
+            // automatically switch to bbcode mode if bbcode plugin is enabled
+            if (editor.plugins.bbcode && config.mode.indexOf("bbcode") <= 0) {
+                config.mode = "bbcode";
             }
 
             // Source mode isn't available in inline mode yet.
@@ -342,6 +347,37 @@
 
                 return;
             }
+            
+            /*
+            // Override Copy Button
+            if (editor.commands.copy) {
+                editor.commands.copy.modes = {
+                    wysiwyg: 1,
+                    source: 1
+                };
+
+                // TODO
+            }
+
+            // Override Paste Button
+            if (editor.commands.paste) {
+                editor.commands.paste.modes = {
+                    wysiwyg: 1,
+                    source: 1
+                };
+                // TODO
+
+            }
+
+            // Override Cut Button
+            if (editor.commands.cut) {
+                editor.commands.cut.modes = {
+                    wysiwyg: 1,
+                    source: 1
+                };
+
+                // TODO
+            }*/
 
             // Override Find Button
             if (editor.commands.find) {
@@ -514,6 +550,18 @@
                 var scriptFiles = [rootPath + 'js/codemirror.addons.min.js'];
 
                 switch (config.mode) {
+                case "bbcode":
+                    {
+                        scriptFiles.push(rootPath + 'js/codemirror.mode.bbcode.min.js');
+                    }
+
+                    break;
+                case "bbcodemixed":
+                        {
+                            scriptFiles.push(rootPath + 'js/codemirror.mode.bbcodemixed.min.js');
+                        }
+
+                        break;
                 case "htmlmixed":
                     {
                         scriptFiles.push(rootPath + 'js/codemirror.mode.htmlmixed.min.js');
@@ -558,8 +606,8 @@
 
                 textarea.setStyles(
                     CKEDITOR.tools.extend({
-                        // IE7 has overflow the <textarea> from wrapping table cell.
-                        width: CKEDITOR.env.ie7Compat ? '99%' : '100%',
+                            // IE7 has overflow the <textarea> from wrapping table cell.
+                            width: CKEDITOR.env.ie7Compat ? '99%' : '100%',
                             height: '100%',
                             resize: 'none',
                             outline: 'none',
@@ -584,12 +632,10 @@
                 var sourceAreaElement = window["editable_" + editor.id],
                     holderElement = sourceAreaElement.getParent();
 
-                //codemirror = editor.id;
-
                 /*CodeMirror.commands.autocomplete = function(cm) {
                     CodeMirror.showHint(cm, CodeMirror.htmlHint);
                 };*/
-                
+
                 // Enable Code Folding (Requires 'lineNumbers' to be set to 'true')
                 if (config.lineNumbers && config.enableCodeFolding) {
                     window["foldFunc_" + editor.id] = CodeMirror.newFoldFunction(CodeMirror.tagRangeFinder);
@@ -613,8 +659,9 @@
                     showTrailingSpace: config.showTrailingSpace,
                     showCursorWhenSelecting: true,
                     //extraKeys: {"Ctrl-Space": "autocomplete"},
-                    extraKeys: { "Ctrl-Q": function(codeMirror_Editor) { window["foldFunc_" + editor.id](codeMirror_Editor, codeMirror_Editor.getCursor().line); } },
-                    onKeyEvent: function(codeMirror_Editor, evt) {
+                    extraKeys: { "Ctrl-Q": function (codeMirror_Editor) { window["foldFunc_" + editor.id](codeMirror_Editor, codeMirror_Editor.getCursor().line); } },
+                    onKeyEvent: function (codeMirror_Editor, evt) {
+                        
                         if (config.enableCodeFormatting) {
                             var range = getSelectedRange();
                             if (evt.type === "keydown" && evt.ctrlKey && evt.keyCode === 75 && !evt.shiftKey && !evt.altKey) {
@@ -633,7 +680,7 @@
                     }
                 });
 
-                var holderHeight = holderElement.$.clientHeight + 'px';
+                var holderHeight = holderElement.$.clientHeight == 0 ? editor.ui.space('contents').getStyle('height') : holderElement.$.clientHeight + 'px';
                 var holderWidth = holderElement.$.clientWidth + 'px';
 
                 // Store config so we can access it within commands etc.
@@ -675,7 +722,8 @@
                         }
                     }, 300);
                 });
-                window["codemirror_" + editor.id].setSize(holderWidth, holderHeight);
+
+                window["codemirror_" + editor.id].setSize(null, holderHeight);
                 
                 // Enable Code Folding (Requires 'lineNumbers' to be set to 'true')
                 if (config.lineNumbers && config.enableCodeFolding) {
@@ -765,6 +813,7 @@
             
             editor.on('beforeModeUnload', function (evt) {
                 if (editor.mode === 'source' && editor.plugins.textselection) {
+
                     var range = editor.getTextSelection();
 
                     range.startOffset = LineChannelToOffSet(window["codemirror_" + editor.id], window["codemirror_" + editor.id].getCursor(true));
@@ -774,6 +823,7 @@
                     delete range.element;
                     range.createBookmark();
                     sourceBookmark = true;
+
                     evt.data = range.content;
                 }
             });
@@ -782,20 +832,21 @@
 
                 if (editor.mode === 'source') {
                     editor.getCommand('autoCompleteToggle').setState(window["codemirror_" + editor.id].config.autoCloseTags ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF);
-                    
 
                     if (editor.plugins.textselection && textRange) {
 
-                        textRange.element = new CKEDITOR.dom.element(editor._.editable.$);
-                        textRange.select();
+                        //textRange.element = new CKEDITOR.dom.element(editor._.editable.$);
+                        //textRange.select();
 
                         var start, end;
 
                         start = OffSetToLineChannel(window["codemirror_" + editor.id], textRange.startOffset);
 
                         if (typeof (textRange.endOffset) == 'undefined') {
+                            window["codemirror_" + editor.id].focus();
                             window["codemirror_" + editor.id].setCursor(start);
                         } else {
+                            window["codemirror_" + editor.id].focus();
                             end = OffSetToLineChannel(window["codemirror_" + editor.id], textRange.endOffset);
                             window["codemirror_" + editor.id].setSelection(start, end);
                         }
@@ -849,6 +900,12 @@
                     };
                 }
             });
+
+            if (typeof (jQuery) != 'undefined' && $('a[data-toggle="tab"]') && window["codemirror_" + editor.id]) {
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
+                    window["codemirror_" + editor.id].refresh();
+                });
+            }
 
             editor.on('setData', function (data) {
                 if (window["editable_" + editor.id] && editor.mode === 'source') {
@@ -937,7 +994,7 @@ CKEDITOR.plugins.sourcearea = {
             },
             editorFocus: false,
             readOnly: 1,
-            exec: function(editor) {
+            exec: function (editor) {
                 var range = {
                     from: window["codemirror_" + editor.id].getCursor(true),
                     to: window["codemirror_" + editor.id].getCursor(false)
@@ -953,7 +1010,7 @@ CKEDITOR.plugins.sourcearea = {
             },
             editorFocus: false,
             readOnly: 1,
-            exec: function(editor) {
+            exec: function (editor) {
                 var range = {
                     from: window["codemirror_" + editor.id].getCursor(true),
                     to: window["codemirror_" + editor.id].getCursor(false)
