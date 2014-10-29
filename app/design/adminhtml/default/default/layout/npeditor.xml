@@ -3,6 +3,7 @@
     <default>
         <reference name="head">
             <action method="addItem"><type>skin_js</type><file>npeditor/ckeditor/ckeditor.js</file></action>
+            <!--<action method="addItem"><type>skin_css</type><file>npeditor/ckeditor/plugins/codemirror/css/codemirror.min.css</file></action>-->
         </reference>
         <reference name="before_body_end">
             <block type="core/template" name="npeditor.js" template="npeditor/js.php"></block>

@@ -229,6 +229,9 @@ class NinePoints_Editor_Block_Adminhtml_Form_Element_Ckeditor extends Varien_Dat
                                 var tag = CKEDITOR.dom.element.createFromHtml(transport.responseText);
                                 editor.insertElement(tag);
                                 editor.widgets.initOn(tag, 'magewidget');
+                            } else if (CMInstances && CMInstances[this.widgetTargetId] != undefined) {
+                                Windows.close("widget_window");
+                                CMInstances[this.widgetTargetId].replaceSelection(transport.responseText);
                             } else {
                                 Windows.close("widget_window");
                                 var textarea = document.getElementById(this.widgetTargetId);

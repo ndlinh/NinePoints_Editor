@@ -88,18 +88,8 @@
         if ($(div.id) == undefined) {
             return false;
         }
-//        var targetEl = this.getTargetElement();
-//        if (! targetEl) {
-//            alert("Target element not found for content update");
-//            Windows.close('browser_window');
-//            return;
-//        }
-//
+
         var params = {filename:div.id, node:this.currentNode.id, store:this.storeId};
-//
-//        if (targetEl.tagName.toLowerCase() == 'textarea') {
-//            params.as_is = 1;
-//        }
 
         new Ajax.Request(this.onInsertUrl, {
             parameters: params,
@@ -108,15 +98,7 @@
                     this.onAjaxSuccess(transport);
                     window.opener.CKEDITOR.tools.callFunction(<?php echo $_GET['CKEditorFuncNum'] ? $_GET['CKEditorFuncNum'] : 1 ?>, transport.responseText);
                     window.close();
-//
-//                    if (targetEl.tagName.toLowerCase() == 'input') {
-//                        targetEl.value = transport.responseText;
-//                    } else {
-//                        updateElementAtCursor(targetEl, transport.responseText);
-//                        if (varienGlobalEvents) {
-//                            varienGlobalEvents.fireEvent('tinymceChange');
-//                        }
-//                    }
+
                 } catch (e) {
                     alert(e.message);
                 }
