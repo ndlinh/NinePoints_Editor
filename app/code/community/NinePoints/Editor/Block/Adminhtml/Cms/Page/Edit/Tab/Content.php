@@ -22,10 +22,7 @@ class NinePoints_Editor_Block_Adminhtml_Cms_Page_Edit_Tab_Content extends Mage_A
             $isElementDisabled = true;
         }
 
-
         $form = new Varien_Data_Form();
-
-
         $form->setHtmlIdPrefix('page_');
 
         $fieldset = $form->addFieldset('content_fieldset', array('legend'=>Mage::helper('cms')->__('Content'),'class'=>'fieldset-wide'));
