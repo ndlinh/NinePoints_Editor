@@ -19,6 +19,16 @@ Help me to keep development
 
 This extension is tested in Magento 1.9.1 but it should work on 1.8 and 1.7.
  Please file a issue if you get any errors.
+ 
+### Installation
+ 
+- Download release at https://github.com/ndlinh/NinePoints_Editor/releases and install via Magento Connect
+
+- Install via [modman](https://github.com/colinmollenhour/modman)
+
+```
+    modman clone https://github.com/ndlinh/NinePoints_Editor.git
+```
 
 ### Roadmap
 
