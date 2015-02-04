@@ -29,6 +29,11 @@
                 language: '<?php echo Mage::helper('npeditor')->getLanguage() ?>',
                 extraPlugins: extPlugins
             });
+            
+            //workaround for editor in hidden tab
+            setTimeout(function() {
+                CKEDITOR.instances[elementId].resize();
+            }, 1000);
 
             return CKEDITOR.instances[elementId];
         }
