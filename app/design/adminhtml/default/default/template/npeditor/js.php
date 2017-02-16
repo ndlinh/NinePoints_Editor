@@ -8,6 +8,8 @@
     <?php endif ?>
     function advEditorToggle(elementId) {
         if (CKEDITOR.instances[elementId]) {
+            
+            document.getElementById(elementId).value = CKEDITOR.instances[elementId].getData();
             CKEDITOR.instances[elementId].destroy(true);
 
             return null;
@@ -27,7 +29,8 @@
                 width: '99.5%',
                 toolbarCanCollapse: true,
                 language: '<?php echo Mage::helper('npeditor')->getLanguage() ?>',
-                extraPlugins: extPlugins
+                extraPlugins: extPlugins,
+                removeButtons: 'Save'
             });
             
             //workaround for editor in hidden tab
